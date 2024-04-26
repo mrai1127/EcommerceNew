@@ -1,8 +1,10 @@
 package com.rai.demo.controller;
 
+import com.rai.demo.common.ApiResponse;
 import com.rai.demo.model.Category;
 import com.rai.demo.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,13 +18,22 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @PostMapping("/create")
-    public String createCategory(@RequestBody Category category){
+    public ResponseEntity<ApiResponse> createCategory(@RequestBody Category category){
         categoryService.createCategory(category);
-        return "category created.";
+        return new ResponseEntity<>(new ApiResponse(true, "a new category created"), HttpStatus.CREATED);
     }
 
     @GetMapping("/list")
     public List<Category> listCategory(){
         return categoryService.listCategory();
+    }
+
+    @PostMapping("/update/{categoryId}")
+    public ResponseEntity<ApiResponse> updateCategory(@PathVariable("categoryId") int categoryId, @RequestBody Category category){
+        if(!categoryService.findById(categoryId)){
+            return new ResponseEntity<>(new ApiResponse(false, "category does not exists"), HttpStatus.NOT_FOUND);
+        }
+        categoryService.editCategory(categoryId, category);
+        return new ResponseEntity<>(new ApiResponse(true, "Category has been updated"), HttpStatus.OK);
     }
 }
