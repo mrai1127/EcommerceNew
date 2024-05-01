@@ -1,5 +1,7 @@
 package com.rai.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -28,6 +30,7 @@ public class Product {
 
     //Creating many to one relationship
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "category_id")
     Category category;
 
