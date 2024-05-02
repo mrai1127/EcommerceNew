@@ -1,6 +1,7 @@
 package com.rai.demo.service;
 
 import com.rai.demo.dto.ProductDto;
+import com.rai.demo.exceptions.ProductNotExistException;
 import com.rai.demo.model.Category;
 import com.rai.demo.model.Product;
 import com.rai.demo.repository.ProductRepository;
@@ -65,5 +66,13 @@ public class ProductService {
         product.setPrice(productDto.getPrice());
 
         productRepository.save(product);
+    }
+
+    public Product findById(Integer productId) throws ProductNotExistException {
+       Optional<Product> optionalProduct = productRepository.findById(productId);
+       if(optionalProduct.isEmpty()){
+           throw new ProductNotExistException("Product id is invalid" + productId);
+       }
+       return optionalProduct.get();
     }
 }
